@@ -1,96 +1,108 @@
 #include "sort.h"
 
 /**
- * initialize_array - Initializes array elements to zero.
- * @array: Array to be initialized.
- * @size: Size of the array.
+ * arr_zero_init - initialize array by 0
+ * @quadr $ lennon
+ * @array: array to be initialized
+ * @size: size of the array
  */
-void initialize_array(int *array, size_t size)
+void arr_zero_init(int *array, int size)
 {
-    for (size_t i = 0; i < size; i++)
-        array[i] = 0;
+	int i;
+
+	for (i = 0; i < size; i++)
+		array[i] = 0;
 }
 
 /**
- * get_max_value - Gets the maximum value in the array.
- * @array: Array to get the max value from.
- * @size: Size of the array.
- * 
- * Returns: The maximum value in the array.
+ * get_max - gets the maximum value in the array
+ * @array: array to get max value from
+ * @size: size of the array
+ * Return: maximum value in the array
  */
-int get_max_value(const int *array, size_t size)
+int get_max(int *array, size_t size)
 {
-    int max = array[0];
+	int max;
+	size_t i;
 
-    for (size_t i = 1; i < size; i++)
-    {
-        if (max < array[i])
-            max = array[i];
-    }
+	max = array[0];	/* start from first index */
 
-    return max;
+	for (i = 1; i < size; i++)
+	{
+		if (max < array[i])
+			max = array[i];
+	}
+
+	return (max);
 }
 
 /**
- * counting_sort - Performs counting sort for LSD radix sort.
- * @array: Initial array.
- * @size: Size of the array.
- * @place: Position of the LSD (least significant digit).
+ * sort_counter - sorts an array using the counting_sort
+ * algorithm for LSD radix sort algorithm
+ * @array: initial array
+ * @size: size of the array
+ * @place: position of the LSD (least significant digit)
  */
-void counting_sort(int *array, size_t size, int place)
+void sort_counter(int *array, size_t size, int place)
 {
-    const int base = 10;
+	int k, *position, *sumPosition, *sorted;
+	size_t i, j;
 
-    int *position = malloc(sizeof(int) * base);
-    if (!position)
-        return;
+	position = malloc(sizeof(int) * 10);
+	if (!position)
+		return;
+	arr_zero_init(position, 10);
 
-    initialize_array(position, base);
+	for (i = 0; i < size; i++)
+		position[(array[i] / place) % 10] += 1;    /* position at LSD */
 
-    for (size_t i = 0; i < size; i++)
-        position[(array[i] / place) % base] += 1;
+	sumPosition = malloc(sizeof(int) * 10);
+	if (!sumPosition)
+		return;
+	arr_zero_init(sumPosition, 10);
+	sumPosition[0] = position[0];   /* make first index equal */
 
-    for (int i = 1; i < base; i++)
-        position[i] += position[i - 1];
+	for (j = 1; j < 10; j++)
+		sumPosition[j] = position[j] + sumPosition[j - 1];
 
-    int *sorted = malloc(sizeof(int) * size);
-    if (!sorted)
-    {
-        free(position);
-        return;
-    }
+	free(position);
 
-    for (int k = size - 1; k >= 0; k--)
-    {
-        position[(array[k] / place) % base] -= 1;
-        sorted[position[(array[k] / place) % base]] = array[k];
-    }
+	sorted = malloc(sizeof(int) * size);
+	if (!sorted)
+		return;
+	arr_zero_init(sorted, size);
 
-    free(position);
+	for (k = size - 1; k >= 0; k--)  /* get the sorted array */
+	{
+		sumPosition[(array[k] / place) % 10] -= 1;
+		sorted[sumPosition[(array[k] / place) % 10]] = array[k];
+	}
+	free(sumPosition);
 
-    for (size_t i = 0; i < size; i++)
-        array[i] = sorted[i];
-
-    free(sorted);
+	for (i = 0; i < size; i++)  /* update array */
+		array[i] = sorted[i];
+	free(sorted);
 }
 
 /**
- * radix_sort - Performs the LSD (least significant digit) radix sort.
- * @array: Array to be sorted.
- * @size: Size of the array.
+ * radix_sort - peforms the the LSD (least significant Digit)
+ * radix sort algorithm
+ * @array: array to be sorted
+ * @size: size of the array
  */
 void radix_sort(int *array, size_t size)
 {
-    if (!array || size < 2)
-        return;
+	int max, position = 1;
 
-    int max_value = get_max_value(array, size);
-    int place = 1;
+	if (!array || size < 2)
+		return;
 
-    while (max_value / place > 0)
-    {
-        counting_sort(array, size, place);
-        print_array(array, size);
-        place *= 10;
-    }
+	max = get_max(array, size);
+
+	while ((max / position) > 0)
+	{
+		sort_counter(array, size, position);
+		print_array(array, size);
+		position *= 10;
+	}
 }
