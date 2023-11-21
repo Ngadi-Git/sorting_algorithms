@@ -57,24 +57,18 @@ void max_heapify(int *array, size_t size, size_t base, size_t root)
  */
 void heap_sort(int *array, size_t size)
 {
-	int indx;
+	int i;
 
 	if (array == NULL || size < 2)
 		return;
 
-	indx = (size / 2) - 1;
-	while (indx >= 0)
-	{
-		max_heapify(array, size, size, indx);
-		indx--;
-	}
+	for (i = (size / 2) - 1; i >= 0; i--)
+		max_heapify(array, size, size, i);
 
-	indx = size - 1;
-	while (indx > 0)
+	for (i = size - 1; i > 0; i--)
 	{
-		swap_ints(array, array + indx);
+		swap_ints(array, array + i);
 		print_array(array, size);
-		max_heapify(array, size, indx, 0);
-		indx--;
+		max_heapify(array, size, i, 0);
 	}
 }
