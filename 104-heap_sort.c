@@ -1,32 +1,31 @@
 #include "sort.h"
 
 /**
- * swap - Swaps positions of values in an array.
- * @array: Array to be modified.
- * @first: Index of the first element.
- * @second: Index of the second element.
- *
- * Return: Nothing.
+ * swap - swaps position of values in array
+ * @array: array to be changed
+ * @first: first index
+ * @second: second index
+ * Return: nothing
  */
-void swap(int *array, int first, int second)
+void swap(int **array, int first, int second)
 {
 	int holder;
 
-	holder = array[first];
+	holder = (*array)[first];
 	(*array)[first] = (*array)[second];
 	(*array)[second] = holder;
 }
 
 /**
- * build_max_heap - Builds a max heap from an array.
- * @array: Array to be converted to a heap.
- * @end_index: End index as the array is partitioned.
- * @start_index: Starting index as the array is sorted.
- * @array_size: Original size of the array.
- *
- * Return: Nothing.
+ * build_Max_Heap - builds a heap from an array
+ * @array: array to be changed to heap array
+ * @end_index: end index as array is partitioned
+ * @quadr $ lennon
+ * @start_index: starting point index as array is sorted
+ * @a_size: array size unchanged
+ * Return: nothing
  */
-void build_max_heap(int *array, int end_index, int start_index, int array_size)
+void build_Max_Heap(int *array, int end_index, int start_index, int a_size)
 {
 	int largest, left, right;
 
@@ -42,18 +41,17 @@ void build_max_heap(int *array, int end_index, int start_index, int array_size)
 
 	if (largest != start_index)
 	{
-		swap(array, start_index, largest);
-		print_array(array, array_size);
-		build_max_heap(array, end_index, largest, array_size);
+		swap(&array, start_index, largest);
+		print_array(array, a_size);
+		build_Max_Heap(array, end_index, largest, a_size);
 	}
 }
 
 /**
- * heap_sort - Sorts an array using the Heap sort algorithm.
- * @array: Array to be sorted.
- * @size: Size of the array.
- *
- * Return: Nothing.
+ * heap_sort - sorts an array using the Heap sort algorithm
+ * @array: array to be sorted
+ * @size: size of the array
+ * Return: nothing
  */
 void heap_sort(int *array, size_t size)
 {
@@ -64,17 +62,17 @@ void heap_sort(int *array, size_t size)
 
 	start_index = ((int)size - 1) / 2;
 
-	/* Build max heap */
+	/*Build max heap*/
 	for (i = start_index; i >= 0; i--)
 	{
-		build_max_heap(array, size, i, size);
+		build_Max_Heap(array, size, i, size);
 	}
 
-	/* Destroy max heap and print the sorted array */
+	/*Destroy max heap and print sorted array*/
 	for (i = size - 1; i > 0; i--)
 	{
-		swap(array, 0, i);
+		swap(&array, 0, i);
 		print_array(array, size);
-		build_max_heap(array, i, 0, size);
+		build_Max_Heap(array, i, 0, size);
 	}
 }
